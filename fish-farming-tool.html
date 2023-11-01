@@ -1,0 +1,232 @@
+<head>
+    <style>
+       /* Calculation tool styles */
+
+       #fish-farming-calculator-heading {
+            color: #fff;
+            font-weight: 700;
+            font-family: LindeDaxOffice;
+            text-align: left;
+            font-size: 2rem;
+        }
+
+        #fish-farming-calculator-subheading {
+            color: #fff;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.7rem;
+        }
+
+        #calculator-parent-div {
+            display: flex;
+            width: 1180px;
+            padding: 5px;
+        }
+
+        #calculation-div {
+            width: 50%;
+            background-color: #00A0E1;
+            padding: 30px 90px;
+            border-radius: 10px;
+        }
+
+        .label-for-calculator {
+            color: #fff;
+            font-size: 1.7rem;
+            font-weight: normal;
+        }
+
+        .input-for-calculator {
+            font-size: 1.7rem;
+            display: block;
+            width: 180px;
+            height: 36px;
+            padding: 0 20px;
+            background: #fff;
+            color: #323840;
+            border: 1px solid #DEE3EB;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .input-for-calculator:hover {
+            transition: all ease-in-out 0.75s;
+            border-color: #00A0E1;
+        }
+
+        #calculator-submit-button {
+            color: #fff;
+            width: 180px;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 1.7rem;
+            border: 2px solid #fff;
+            background-color: transparent;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
+        /* 
+        #reset-calculation-progress {
+            color: #00A0E1;
+            background-color: #fff;
+            border-radius: 5px;
+            width: 220px;
+            padding: 10px;
+            border: 1px solid #00A0E1;
+            cursor: pointer;
+            font-size: 1.7rem;
+            font-weight: 700;
+        } */
+
+        #result-table {
+            width: 50%;
+            height: auto;
+            padding: 30px 60px;
+            background-color: #bec8d752;
+            border-radius: 10px;
+            margin-left: 20px;
+        }
+
+        #result-table h4 {
+            text-align: center;
+            color: #00305c;
+            font-weight: 700;
+            font-size: 2.5rem;
+            transition: all ease-in-out 0.75s;
+            margin-top: 0px;
+            margin-bottom: 15px;
+        }
+
+        #info-p {
+            color: #00305c;
+            font-size: 1.7rem;
+            text-align: left;
+            font-weight: 700;
+        }
+
+        #result-box {
+            display: none;
+            margin: auto;
+            width: fit-content;
+        }
+
+        #previous-results {
+            display: none;
+            /* color: #00305c; */
+            font-size: 1.7rem;
+            text-align: left;
+            padding: 5px 20px;
+            font-weight: 700;
+        }
+
+        #calculation-result {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 20px;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+
+<!--New  fish farming calculator widget-->
+<div id="template-content-sixth-widget-div" style="display: block;">
+    <div id="calculator-parent-div">
+        <div id="calculation-div">
+            <h3 id="fish-farming-calculator-heading">Calculate your nitrogen saturation!</h3>
+            <h5 id="fish-farming-calculator-subheading">Determine the nitrogen levels in your water in seconds</h5>
+            <br>
+            <div style="display: flex;">
+                <div style="margin-right: 20px;">
+                    <label for="tdg" class="label-for-calculator">TDG (total dissolved gas %)</label>
+                    <input type="number" class="input-for-calculator" id="tdg" value="">
+                </div>
+                <div>
+                    <label for="do" class="label-for-calculator">DO (dissolved oxygen %)</label>
+                    <input type="number" class="input-for-calculator" id="do" value="">
+                </div>
+            </div>
+            <br>
+            <!-- <button id="reset-calculation-progress" onclick="getPreviousCalculations()">Previous calculations</button> -->
+            <button onclick="displayResult()" id="calculator-submit-button">Calculate &#8594;</button>
+        </div>
+        <div id="result-table">
+            <h4 id="calculation-result-head">Percentage of nitrogen saturation</h4>
+            <div id="result-box">
+                <div>
+                    <p id="calculation-result"><span id="resultP"></span></p>
+                </div>
+                <div>
+                    <p id="previous-results"> </p>
+                </div>
+            </div>
+            <p id="info-p">In this calculation, the nitrogen saturation is representing the combined pressure of all gases that are present 
+                in the water, <span style="text-decoration: underline;">except oxygen</span>. This includes N2, Ar, other gases from the surrounding air and from the biological activity in the water.
+            </p>
+
+
+        </div>
+    </div>
+
+</div>
+
+
+<!--Calculation script-->
+<script>
+    let tdg = document.getElementById('tdg');
+    let doValue = document.getElementById('do');
+    let resultP = document.getElementById("resultP");
+    let lastresults = [];
+
+    let result = 0; tdg - (doValue * 0.208) / 0.792;
+
+    function getPreviousCalculations() {
+        let previousResults = document.getElementById("previous-results");
+        previousResults.style.display = "block";
+        resultRow = lastresults.split("%");
+        for (let i = 0; i < resultRow.length - 1; i++) {
+            let item = document.createElement("span");
+            item.innerHTML += resultRow[i] + "%" + "<br>";
+            if(resultRow[i] > 100){
+                item.style.color = "red";
+            }else{
+                item.style.color = "green";
+            }
+            previousResults.insertBefore(item, previousResults.firstChild);
+            // previousResults.appendChild(item);
+        }
+        lastresults = [];
+    }
+
+    function displayResult() {
+        document.getElementById('result-box').style.display = "flex";
+        document.getElementById('calculation-result-head').style.fontSize = '2rem';
+        result = Math.round(((tdg.value - (doValue.value * 0.208)) / 0.792) * 100) / 100;
+        lastresults += result + "% ";
+
+        if (result > 100) {
+            resultP.style.color = "red";
+        } else {
+            resultP.style.color = "green";
+        }
+        tdg.value = "";
+        doValue.value = "";
+        resultP.innerHTML = result + "% SAT";
+    }
+    doValue.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            document.getElementById("calculator-submit-button").click();
+        }
+        getPreviousCalculations();
+    });
+
+
+</script>
